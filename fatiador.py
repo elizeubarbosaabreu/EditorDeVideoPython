@@ -3,9 +3,10 @@ from timestamp import now
 
 class Fatiador:
 
-    def __init__(self, path_video='', inicio=0, passo=15):
+    def __init__(self, path_video='', inicio=0, fim=0, passo=15):
         self.path_video = path_video
         self.inicio = inicio
+        self.fim = fim
         self.passo = passo
 
     def info(self):
@@ -24,10 +25,12 @@ class Fatiador:
         
 
     def fatiador(self): 
+
+        self.fim = self.passo
         
         video = VideoFileClip(self.path_video)
 
-        while(self.fim<= video.duration):
+        while(self.fim <= video.duration):
             try:
                 shorts = video.subclip(self.inicio, self.fim)    
                 shorts.resize(width=480).fx(vfx.fadeout, 1).fx(vfx.fadein, 1)
@@ -40,13 +43,15 @@ class Fatiador:
                 if self.fim > video.duration:
                     self.fim = video.duration
             except Exception as e:
+                print(e)
                 break
         
 def main():
 
-    path_video = r'/home/elizeu/Área de trabalho/VideoEditor/arquivos/Unicesumar Institucional-(1080p24).mp4'
+    path_video = r'/home/elizeu/Vídeos/youtube-in6SBu7THEk/in6SBu7THEk.mp4'
     fatia = Fatiador(path_video=path_video)
     print(fatia.info())
+    fatia.fatiador()
 
 if __name__ == '__main__':
     main()
