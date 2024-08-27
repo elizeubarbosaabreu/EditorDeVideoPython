@@ -1,10 +1,16 @@
 from faster_whisper import WhisperModel
 from moviepy.editor import VideoFileClip
 from timestamp import now
+
 class Transcriber:
-    def __init__(self, model_size="tiny", max_words=5):
+    def __init__(self, model_size="tiny", input_video="", max_words=4):
         self.model = WhisperModel(model_size)
+        self.input_video = input_video
         self.max_words = max_words
+        
+        self.video = VideoFileClip(self.input_video)
+        self.audio_file = '.audio.mp3'
+        self.video.audio.write_audiofile(self.audio_file)
     
     def format_time(self, seconds):
         hours = int(seconds // 3600)
@@ -31,8 +37,12 @@ class Transcriber:
 
         return segments
     
-    def transcribe_to_srt(self, audio_file, output_srt):
-        segments, _ = self.model.transcribe(audio_file)
+    def transcribe_to_srt(self, output_srt=None):
+        print("A inteligência artificial está criando sua legenda...\nAguarde...")
+        if output_srt is None:
+            output_srt = f"saida/legenda_{now()}.srt"
+
+        segments, _ = self.model.transcribe(self.audio_file)
         with open(output_srt, 'w') as texto:
             index = 1
             for segment in segments:
@@ -45,25 +55,12 @@ class Transcriber:
                     texto.write(f"{self.format_time(split_segment['start_time'])} --> {self.format_time(split_segment['end_time'])}\n")
                     texto.write(f"{split_segment['text']}\n\n")
                     index += 1
-
+                    
         print("Legenda pronta")
 
 
-if __name__ == '__main__':    
-    
-    model = WhisperModel("tiny")
-
-    input_video = input("Video para ser legendado: ")
-
-    # Carrega o vídeo
-    video = VideoFileClip(input_video)
-
-    # Extrai o áudio e salva como .mp3
-
-    video.audio.write_audiofile('.audio.mp3')
-    transcriber = Transcriber(max_words=5)
-    
-    transcriber.transcribe_to_srt(".audio.mp3", f"saida/legenda_{now()}.srt")
-
+if __name__ == '__main__':
+    transcriber = Transcriber()
+    transcriber.transcribe_to_srt()
 
     print("Legenda pronta para ser adicionada ao clip")

@@ -3,11 +3,12 @@ from timestamp import now
 
 class Fatiador:
 
-    def __init__(self, path_video='', inicio=0, fim=0, passo=15):
+    def __init__(self, path_video='', inicio=0, fim=0, passo=15, diretorio="Downloads"):
         self.path_video = path_video
         self.inicio = inicio
         self.fim = fim
         self.passo = passo
+        self.diretorio = diretorio
 
     def info(self):
         
@@ -35,7 +36,7 @@ class Fatiador:
                 shorts = video.subclip(self.inicio, self.fim)    
                 shorts.resize(width=480).fx(vfx.fadeout, 1).fx(vfx.fadein, 1)
 
-                filename = f'saida/video_{now()}.mp4'
+                filename = f'{self.diretorio}/video_{now()}.mp4'
 
                 shorts.write_videofile(filename, fps=30, threads=1)
                 self.inicio += self.passo
