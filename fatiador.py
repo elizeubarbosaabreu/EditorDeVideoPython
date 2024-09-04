@@ -49,7 +49,7 @@ class Fatiador:
         
 def main():
 
-    path_video = r'/home/elizeu/Vídeos/youtube-in6SBu7THEk/in6SBu7THEk.mp4'
+    path_video = input("Caminho do vídeo: ")
     fatia = Fatiador(path_video=path_video)
     print(fatia.info())
     fatia.fatiador()
